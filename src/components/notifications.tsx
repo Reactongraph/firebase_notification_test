@@ -1,9 +1,22 @@
 import { Box, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
-import { INotification } from '../types/notification.types';
 import NotificationDropdown from './notificationDropdown';
+import { INotification } from '../types/notification.types';
 import { addNotification, getNotifications, markAsRead } from '../services/notificationService';
+
+/**
+ * Finds an unread notification with the given message and marks it as read.
+ * @param notifications - The array of notifications.
+ * @param message - The message of the notification to mark as read.
+ * @param handleMarkAsRead - The function to mark a notification as read.
+ */
+const markUnreadNotificationAsRead = (notifications: INotification[], message: string, handleMarkAsRead: (id: string) => void) => {
+  const unreadNotification = notifications.find((notification) => notification.message === message && !notification.read);
+  if (unreadNotification) {
+    handleMarkAsRead(unreadNotification.id);
+  }
+};
 
 /**
  * Component that handles displaying and managing notifications.
@@ -38,7 +51,9 @@ const Notifications: React.FC = () => {
   const handleMarkAsRead = async (id: string) => {
     try {
       await markAsRead(id);
-      setNotifications((prevNotifications) => prevNotifications.map((n) => (n.id === id ? { ...n, read: true } : n)));
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) => (notification.id === id ? { ...notification, read: true } : notification))
+      );
     } catch (error) {
       console.error('Error marking notification as read:', error);
       setError('Failed to mark notification as read');
@@ -66,18 +81,8 @@ const Notifications: React.FC = () => {
    */
   const handleButtonClick = (message: string) => {
     const toastOptions: ToastOptions = {
-      onOpen: () => {
-        const unreadNotification = notifications.find((n) => n.message === message && !n.read);
-        if (unreadNotification) {
-          handleMarkAsRead(unreadNotification.id);
-        }
-      },
-      onClose: () => {
-        const unreadNotification = notifications.find((n) => n.message === message && !n.read);
-        if (unreadNotification) {
-          handleMarkAsRead(unreadNotification.id);
-        }
-      }
+      onOpen: () => markUnreadNotificationAsRead(notifications, message, handleMarkAsRead),
+      onClose: () => markUnreadNotificationAsRead(notifications, message, handleMarkAsRead)
     };
 
     toast.info(message, toastOptions);
@@ -93,7 +98,7 @@ const Notifications: React.FC = () => {
       ) : (
         <NotificationDropdown notifications={notifications} onMarkAsRead={handleMarkAsRead} />
       )}
-      <Box mt={2} display={'flex'} gap={1}>
+      <Box mt={2} display="flex" gap={1}>
         <Button variant="outlined" sx={{ mr: 1 }} onClick={() => handleButtonClick('Notification Type 1')}>
           Add Notification Type 1
         </Button>

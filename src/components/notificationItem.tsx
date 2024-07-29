@@ -8,25 +8,17 @@ import { INotificationItemProps } from '../types/notification.types';
  * @param {NotificationItemProps} props - The props for the component.
  * @returns {JSX.Element} The rendered NotificationItem component.
  */
-const NotificationItem: React.FC<INotificationItemProps> = ({ notification, onMarkAsRead, ...listItemProps }) => {
+const NotificationItem: React.FC<INotificationItemProps> = ({ notification, onMarkAsRead, ...otherProps }) => {
   /**
    * Handles the click event on the notification item.
    * If the notification is unread, it marks it as read.
    */
-  const handleClick = () => {
-    if (!notification.read) {
-      onMarkAsRead(notification.id);
-    }
-  };
+  const handleClick = () => !notification.read && onMarkAsRead(notification.id);
+
+  const getBackgroundColor = () => (notification.read ? 'transparent' : '#e0e0e0');
 
   return (
-    <ListItem
-      onClick={handleClick}
-      style={{
-        backgroundColor: notification.read ? 'transparent' : '#e0e0e0'
-      }}
-      {...listItemProps}
-    >
+    <ListItem onClick={handleClick} style={{ backgroundColor: getBackgroundColor() }} {...otherProps}>
       <ListItemText primary={notification.message} />
     </ListItem>
   );

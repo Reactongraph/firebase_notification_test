@@ -5,6 +5,16 @@ import { IconButton, Popover, List, Box, Typography } from '@mui/material';
 import { INotification, INotificationDropdownProps } from '../types/notification.types';
 
 /**
+ * Renders a list item for each notification.
+ * @param notification - The notification object to render.
+ * @param onMarkAsRead - The function to mark a notification as read.
+ * @returns A NotificationItem component.
+ */
+const renderNotificationItem = (notification: INotification, onMarkAsRead: (id: string) => void) => (
+  <NotificationItem key={notification.id} notification={notification} onMarkAsRead={onMarkAsRead} />
+);
+
+/**
  * Component that displays a dropdown with a list of notifications.
  */
 const NotificationDropdown: React.FC<INotificationDropdownProps> = ({ notifications, onMarkAsRead }) => {
@@ -26,35 +36,20 @@ const NotificationDropdown: React.FC<INotificationDropdownProps> = ({ notificati
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'notification-dropdown' : undefined;
-
-  /**
-   * Renders a list item for each notification.
-   * @param notification - The notification object to render.
-   * @returns A NotificationItem component.
-   */
-  const renderNotificationItem = (notification: INotification) => (
-    <NotificationItem key={notification.id} notification={notification} onMarkAsRead={onMarkAsRead} />
-  );
+  const popoverId = open ? 'notification-dropdown' : undefined;
 
   return (
     <div>
-      <IconButton onClick={handleClick} aria-describedby={id}>
+      <IconButton onClick={handleClick} aria-describedby={popoverId}>
         <NotificationsIcon />
       </IconButton>
       <Popover
-        id={id}
+        id={popoverId}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <Box maxHeight={300} overflow="auto">
           {notifications.length === 0 ? (
@@ -62,7 +57,7 @@ const NotificationDropdown: React.FC<INotificationDropdownProps> = ({ notificati
               No notification found
             </Typography>
           ) : (
-            <List>{notifications.map(renderNotificationItem)}</List>
+            <List>{notifications.map((notification) => renderNotificationItem(notification, onMarkAsRead))}</List>
           )}
         </Box>
       </Popover>
