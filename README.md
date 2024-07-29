@@ -18,7 +18,7 @@ This project is a simple Firebase and React SPA for managing notifications. It i
 1 **Clone the Repository**
 
 ```bash
-git clone https://github.com/your-username/notification-system.git
+git clone https://github.com/Reactongraph/firebase_notification_test.git
 cd notification-system
 ```
 
