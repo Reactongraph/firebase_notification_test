@@ -1,4 +1,4 @@
-import { db } from "../config/firebaseConfig";
+import { db } from '../config/firebaseConfig';
 import {
   collection,
   addDoc,
@@ -8,17 +8,9 @@ import {
   DocumentData,
   QuerySnapshot,
   DocumentReference,
-  FirestoreError,
-} from "firebase/firestore";
-
-/**
- * Represents a notification object.
- */
-interface Notification {
-  id: string;
-  message: string;
-  read: boolean;
-}
+  FirestoreError
+} from 'firebase/firestore';
+import { INotification, NotificationData } from '../types/notification.types';
 
 /**
  * Custom error class for notification service errors.
@@ -26,11 +18,11 @@ interface Notification {
 export class NotificationServiceError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "NotificationServiceError";
+    this.name = 'NotificationServiceError';
   }
 }
 
-const notificationCollection = collection(db, "notifications");
+const notificationCollection = collection(db, 'notifications');
 
 /**
  * Adds a new notification to the Firestore database.
@@ -43,9 +35,7 @@ export const addNotification = async (message: string): Promise<void> => {
     await addDoc(notificationCollection, { message, read: false });
   } catch (error) {
     if (error instanceof FirestoreError) {
-      throw new NotificationServiceError(
-        `Error adding notification: ${error.message}`
-      );
+      throw new NotificationServiceError(`Error adding notification: ${error.message}`);
     } else {
       throw new NotificationServiceError(`Error adding notification: ${error}`);
     }
@@ -58,23 +48,21 @@ export const addNotification = async (message: string): Promise<void> => {
  * @returns A Promise that resolves to an array of notifications.
  * @throws {NotificationServiceError} If an error occurs while fetching notifications.
  */
-export const getNotifications = async (): Promise<Notification[]> => {
+export const getNotifications = async (): Promise<NotificationData[]> => {
   try {
-    const snapshot: QuerySnapshot<DocumentData> = await getDocs(
-      notificationCollection
-    );
+    const snapshot: QuerySnapshot<DocumentData> = await getDocs(notificationCollection);
     return snapshot.docs.map(
-      (doc): Notification => ({ id: doc.id, ...doc.data() } as Notification)
+      (doc): NotificationData =>
+        ({
+          id: doc.id,
+          ...doc.data()
+        }) as INotification
     );
   } catch (error) {
     if (error instanceof FirestoreError) {
-      throw new NotificationServiceError(
-        `Error fetching notifications: ${error.message}`
-      );
+      throw new NotificationServiceError(`Error fetching notifications: ${error.message}`);
     } else {
-      throw new NotificationServiceError(
-        `Error fetching notifications: ${error}`
-      );
+      throw new NotificationServiceError(`Error fetching notifications: ${error}`);
     }
   }
 };
@@ -87,21 +75,13 @@ export const getNotifications = async (): Promise<Notification[]> => {
  */
 export const markAsRead = async (id: string): Promise<void> => {
   try {
-    const notificationDoc: DocumentReference<DocumentData> = doc(
-      db,
-      "notifications",
-      id
-    );
+    const notificationDoc: DocumentReference<DocumentData> = doc(db, 'notifications', id);
     await updateDoc(notificationDoc, { read: true });
   } catch (error) {
     if (error instanceof FirestoreError) {
-      throw new NotificationServiceError(
-        `Error marking notification as read: ${error.message}`
-      );
+      throw new NotificationServiceError(`Error marking notification as read: ${error.message}`);
     } else {
-      throw new NotificationServiceError(
-        `Error marking notification as read: ${error}`
-      );
+      throw new NotificationServiceError(`Error marking notification as read: ${error}`);
     }
   }
 };

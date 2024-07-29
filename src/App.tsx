@@ -1,9 +1,9 @@
-import React from "react";
-import { Container } from "@mui/material";
-import { ToastContainer } from "react-toastify";
-import Notifications from "./components/notifications";
+import React from 'react';
+import { Container } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import Notifications from './components/notifications';
 
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 /**
  * The main application component.

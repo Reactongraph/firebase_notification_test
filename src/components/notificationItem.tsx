@@ -1,22 +1,6 @@
-import React from "react";
-import { ListItem, ListItemText, ListItemProps } from "@mui/material";
-
-/**
- * Interface representing a notification object.
- */
-interface Notification {
-  id: string;
-  message: string;
-  read: boolean;
-}
-
-/**
- * Props for the NotificationItem component.
- */
-interface NotificationItemProps extends ListItemProps {
-  notification: Notification;
-  onMarkAsRead: (id: string) => void;
-}
+import React from 'react';
+import { ListItem, ListItemText } from '@mui/material';
+import { INotificationItemProps } from '../types/notification.types';
 
 /**
  * A React component that displays a single notification item.
@@ -24,11 +8,7 @@ interface NotificationItemProps extends ListItemProps {
  * @param {NotificationItemProps} props - The props for the component.
  * @returns {JSX.Element} The rendered NotificationItem component.
  */
-const NotificationItem: React.FC<NotificationItemProps> = ({
-  notification,
-  onMarkAsRead,
-  ...listItemProps
-}) => {
+const NotificationItem: React.FC<INotificationItemProps> = ({ notification, onMarkAsRead, ...listItemProps }) => {
   /**
    * Handles the click event on the notification item.
    * If the notification is unread, it marks it as read.
@@ -43,7 +23,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <ListItem
       onClick={handleClick}
       style={{
-        backgroundColor: notification.read ? "transparent" : "#e0e0e0",
+        backgroundColor: notification.read ? 'transparent' : '#e0e0e0'
       }}
       {...listItemProps}
     >
