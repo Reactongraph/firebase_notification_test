@@ -57,3 +57,38 @@ firebase emulators:start --only firestore
 ```bash
 pnpm dev
 ```
+
+6 **Linting and Formatting**
+This project uses ESLint and Prettier for code linting and formatting. You can run the following scripts to check for linting and formatting issues, or to automatically fix them:
+
+```bash
+# Check for linting issues
+pnpm run lint:check
+
+# Fix linting issues
+pnpm run lint:fix
+
+# Check for formatting issues
+pnpm run prettier:check
+
+# Fix formatting issues
+pnpm run prettier:fix
+```
+
+7 **Building for Production**
+To build the project for production, run:
+
+```bash
+pnpm run build
+```
+
+This will generate a production-ready build in the dist directory.
+
+8 **Preview the Production Build**
+You can preview the production build by running:
+
+```bash
+pnpm run preview
+```
+
+This will start a local server and serve the production build.
